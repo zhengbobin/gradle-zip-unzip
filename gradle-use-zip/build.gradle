@@ -1,0 +1,40 @@
+plugins {
+    id 'maven-publish'
+    id 'base'
+}
+
+repositories {
+    mavenLocal()
+}
+
+group 'my.test.use-zip'
+version '0.0.1-SNAPSHOT'
+
+configurations {
+  zipScript
+}
+
+dependencies {
+  zipScript 'my.test.zip:gradle-dist-zip:0.0.1-SNAPSHOT@zip'
+}
+
+task copyZip(type: Copy) {
+    from configurations.zipScript
+    into "$buildDir/zipScript"
+}
+
+task unzip(type: Copy) {
+  fileTree("$buildDir/zipScript").each {
+    println "unzip: file=$it"
+    from(zipTree("$it"))
+  }
+  into "$buildDir/unzip"
+}
+
+// publishing {
+  // publications {
+    // mavenJava(MavenPublication) {
+      // artifact source: zipScript, extension: 'zip'
+    // }
+  // }
+// }
